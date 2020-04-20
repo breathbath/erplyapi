@@ -3,6 +3,7 @@ module github.com/breathbath/erplyapi
 go 1.14
 
 require (
+	github.com/appleboy/gin-jwt/v2 v2.6.3
 	github.com/breathbath/go_utils v1.3.7
 	github.com/erply/api-go-wrapper v0.0.1
 	github.com/gin-gonic/gin v1.6.2

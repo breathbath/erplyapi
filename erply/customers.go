@@ -116,6 +116,8 @@ func (c Customers) Save(input *api.CustomerConstructor) (report *api.CustomerImp
 @apiDescription Lists customers by comma separated ids list
 @apiName Customers list by ids
 @apiGroup Customers
+@apiUse JsonHeader
+@apiUse AuthHeader
 
 @apiExample {String} With many ids
 		/customers/1,2,3
@@ -233,6 +235,8 @@ func GetCustomersByIdHandler(c *gin.Context) {
 @apiDescription Creates a new customer
 @apiName Customers create
 @apiGroup Customers
+@apiUse JsonHeader
+@apiUse AuthHeader
 
 @apiParamExample {json} Body:
 {

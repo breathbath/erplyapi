@@ -29,6 +29,132 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/login",
+    "title": "Login",
+    "description": "<p>User auth</p>",
+    "name": "Login",
+    "group": "Auth",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "{\n\t\"username\": \"admin\",\n\t\"password\": \"admin\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "HTTP/1.1 200 OK\n{\n    \"code\": 200,\n    \"expire\": \"2020-04-20T13:30:49+03:00\",\n    \"token\": \"YOUR_TOKEN_RESULT\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Bad request(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"incorrect Username or Password\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "/home/apidoc/source/auth/authMiddleware.go",
+    "groupTitle": "Auth",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Content-Type",
+            "defaultValue": "application/json",
+            "description": "<p>Json content type</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Content-Type",
+          "content": "Content-Type:\"application/json\"",
+          "type": "String"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "/refresh",
+    "title": "Refresh token",
+    "description": "<p>Refreshes the auth token</p>",
+    "name": "Refresh_token",
+    "group": "Auth",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "HTTP/1.1 200 OK\n{\n    \"code\": 200,\n    \"expire\": \"2020-04-20T13:47:59+03:00\",\n    \"token\": \"YOUR_TOKEN_RESULT\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Bad request(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Unauthorized(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "/home/apidoc/source/auth/authMiddleware.go",
+    "groupTitle": "Auth",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Content-Type",
+            "defaultValue": "application/json",
+            "description": "<p>Json content type</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT token value</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Content-Type",
+          "content": "Content-Type:\"application/json\"",
+          "type": "String"
+        },
+        {
+          "title": "Authorization Header",
+          "content": "Authorization: \"Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9\"",
+          "type": "String"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
     "url": "/customers",
     "title": "Customers create",
     "description": "<p>Creates a new customer</p>",
@@ -58,6 +184,11 @@ define({ "api": [
           "title": "Bad request(400)",
           "content": "HTTP/1.1 400 Bad request\n{\n    \"message\": \"ERPLY API: Can not save customer with empty name or registry number status: Error\"\n}",
           "type": "json"
+        },
+        {
+          "title": "Unauthorized(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
         }
       ]
     },
@@ -68,7 +199,40 @@ define({ "api": [
     ],
     "version": "0.0.0",
     "filename": "/home/apidoc/source/erply/customers.go",
-    "groupTitle": "Customers"
+    "groupTitle": "Customers",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Content-Type",
+            "defaultValue": "application/json",
+            "description": "<p>Json content type</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT token value</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Content-Type",
+          "content": "Content-Type:\"application/json\"",
+          "type": "String"
+        },
+        {
+          "title": "Authorization Header",
+          "content": "Authorization: \"Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9\"",
+          "type": "String"
+        }
+      ]
+    }
   },
   {
     "type": "get",
@@ -104,6 +268,11 @@ define({ "api": [
           "title": "Not found(404)",
           "content": "HTTP/1.1 404 Not found\n[]",
           "type": "json"
+        },
+        {
+          "title": "Unauthorized(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
         }
       ]
     },
@@ -114,6 +283,39 @@ define({ "api": [
     ],
     "version": "0.0.0",
     "filename": "/home/apidoc/source/erply/customers.go",
-    "groupTitle": "Customers"
+    "groupTitle": "Customers",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Content-Type",
+            "defaultValue": "application/json",
+            "description": "<p>Json content type</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT token value</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Content-Type",
+          "content": "Content-Type:\"application/json\"",
+          "type": "String"
+        },
+        {
+          "title": "Authorization Header",
+          "content": "Authorization: \"Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9\"",
+          "type": "String"
+        }
+      ]
+    }
   }
 ] });
