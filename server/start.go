@@ -14,12 +14,18 @@ func Start() error {
 	
 	log := logrus.New()
 	
-	router.Use(ginlogrus.Logger(log), gin.Recovery())
+	router.Use(ginlogrus.Logger(log))
+	router.Use(gin.Recovery())
 
 	customerRoute := router.Group("/customers")
 	{
 		customerRoute.GET("/:ids", erply.GetCustomersByIdHandler)
 		customerRoute.POST("/", erply.CreateCustomerHandler)
+	}
+
+	docsPath := env.ReadEnv("DOCS_PATH", "")
+	if docsPath != "" {
+		router.Static("/docs", docsPath)
 	}
 
 	addr := ":" + env.ReadEnv("REST_SERVER_PORT", "8082")

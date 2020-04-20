@@ -15,5 +15,7 @@ services:
       - redis
     entrypoint: /app/erply_server
     ports:
-      - 127.0.0.1:3001:3001
+      - 127.0.0.1:8082:8082
     restart: on-failure
+    volumes:
+      - ./apidoc:/app/apidoc

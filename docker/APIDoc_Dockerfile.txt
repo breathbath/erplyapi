@@ -1,0 +1,10 @@
+FROM node:stretch-slim
+
+RUN mkdir -p /home/apidoc/source && mkdir -p /home/apidoc/apidoc
+WORKDIR /home/apidoc
+
+RUN npm install -g -f apidoc
+
+COPY . /home/apidoc/source
+
+RUN apidoc --input /home/apidoc/source --output /home/apidoc/apidoc -v

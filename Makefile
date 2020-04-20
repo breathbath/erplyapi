@@ -25,6 +25,7 @@ help:
 	@echo "test              : Run unit tests, if any"
 	@echo "up				 : Bring all services up with docker-compose"
 	@echo "down				 : Bring all services down with docker-compose"
+	@echo "gendoc			 : Generates API docs"
 	@echo
 
 build:
@@ -43,3 +44,7 @@ up:
 
 down:
 	docker-compose -f docker-compose.yml down
+
+gendoc:
+	docker build -f ./docker/APIDoc_Dockerfile.txt -t erply_apidoc:latest .
+	docker run --rm -it -v ${CURDIR}/apidoc:/home/apidoc/apidoc -v ${CURDIR}:/home/apidoc/source erply_apidoc:latest apidoc --input /home/apidoc/source --output /home/apidoc/apidoc -v

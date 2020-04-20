@@ -38,6 +38,10 @@ To run unit-tests:
 
     make test
     
+To generate API docs:
+
+    make gendoc
+    
 To show full help:
 
     make help
