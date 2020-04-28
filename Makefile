@@ -13,6 +13,8 @@ DOCKER_TAG               ?= ${VERSION}
 DOCKER_BUILD_ARGS        ?=${DOCKER_EXTRA_ARGS} --build-arg version="${VERSION}"
 IMAGE_NAME				 ?=erply_api
 
+now=$(shell date +"%Y%m%d%H%M%S")
+
 default: build
 
 help:
@@ -48,3 +50,7 @@ down:
 gendoc:
 	docker build -f ./docker/APIDoc_Dockerfile.txt -t erply_apidoc:latest .
 	docker run --rm -it -v ${CURDIR}/apidoc:/home/apidoc/apidoc -v ${CURDIR}:/home/apidoc/source erply_apidoc:latest apidoc --input /home/apidoc/source --output /home/apidoc/apidoc -v
+genmig:
+	#cat migrations/template.txt | sed -e 's/MigName/Migration${now}/g' > migrations/items/Migration${now}.go
+	docker run --rm -it -v ${CURDIR}/migrations:/home/migrations busybox sh -c 'sed "s/MigName/Migration${now}/g" /home/migrations/template.txt  > /home/migrations/items/Migration${now}.go'
+	docker run --rm -it -v ${CURDIR}/migrations:/home/migrations busybox sed -i "s/^}/	registry.RegisterMigration(items.Migration${now}{})\\n}/g" /home/migrations/registryInitialiser.go

@@ -1,0 +1,18 @@
+package items
+
+import "github.com/breathbath/erplyapi/migrations"
+
+type MigName struct {
+	migrations.BasicMigration
+}
+
+func (mm MigName) GetId() string {
+	return "MigName"
+}
+
+//todo add query items
+func (mm MigName) GetQueries() []migrations.Query {
+	return []migrations.Query{
+		//add sql here
+	}
+}

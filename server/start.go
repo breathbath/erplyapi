@@ -1,43 +1,53 @@
 package server
 
 import (
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/breathbath/erplyapi/auth"
-	"github.com/breathbath/erplyapi/erply"
+	"github.com/breathbath/erplyapi/db"
+	"github.com/breathbath/erplyapi/graph"
+	"github.com/breathbath/erplyapi/metrics"
 	"github.com/breathbath/go_utils/utils/env"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"github.com/thinkerou/favicon"
 	ginlogrus "github.com/toorop/gin-logrus"
 )
 
 //Start main entry point for the gin server
 func Start() error {
 	router := gin.Default()
-	
-	log := logrus.New()
-	
-	router.Use(ginlogrus.Logger(log))
+
+	router.LoadHTMLGlob("templates/*")
+
+	router.Use(favicon.New("./favicon.ico"))
+	router.Use(ginlogrus.Logger(logrus.StandardLogger()))
 	router.Use(gin.Recovery())
 
-	authMiddleware, err := auth.BuildMiddleWare()
+	authMiddleware, err := auth.BuildFrontMiddleWare()
 	if err != nil {
 		return err
 	}
 	router.POST("/login", authMiddleware.LoginHandler)
 
-	router.NoRoute(authMiddleware.MiddlewareFunc(), func(c *gin.Context) {
-		claims := jwt.ExtractClaims(c)
-		log.Printf("NoRoute claims: %#v", claims)
-		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
-	})
-
 	router.POST("/refresh", authMiddleware.RefreshHandler)
 
-	customerRoute := router.Group("/customers")
-	customerRoute.Use(authMiddleware.MiddlewareFunc())
+	baseDB, err := db.NewDb()
+	if err != nil {
+		return err
+	}
+	visitsDb := db.Visits{Db: baseDB}
+	visitsEndpoint := metrics.Endpoint{VisitStore: visitsDb}
+
+	visitsRoute := router.Group("/visits")
+	visitsRoute.Use(authMiddleware.MiddlewareFunc())
 	{
-		customerRoute.GET("/:ids", erply.GetCustomersByIdHandler)
-		customerRoute.POST("/", erply.CreateCustomerHandler)
+		visitsRoute.POST("", visitsEndpoint.CreateVisitsHandler)
+	}
+
+	visitStatsHandler := graph.VisitStatsHandler{VisitsByHourProvider:visitsDb}
+	graphsRoute := router.Group("/graphs")
+	//graphsRoute.Use(authMiddleware.MiddlewareFunc())
+	{
+		graphsRoute.GET("visits-by-hour/:from/*to", visitStatsHandler.VisitsByHourHandler)
 	}
 
 	docsPath := env.ReadEnv("DOCS_PATH", "")
