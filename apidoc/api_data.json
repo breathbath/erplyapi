@@ -155,14 +155,21 @@
   },
   {
     "type": "get",
-    "url": "/reports/:code/visits-by-hour.:format?from=:from&to=:to",
-    "title": "Reports visits by hour",
-    "name": "Visits_by_hour",
+    "url": "/reports/:code/visits-by-day.:format?from=:from&to=:to",
+    "title": "Reports visits by day",
+    "name": "Visits_by_day",
     "group": "Reports",
-    "description": "<p>Get visits by hour</p>",
+    "description": "<p>Get visits by day</p>",
     "parameter": {
       "fields": {
         "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
+            "field": "from",
+            "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -7 days from now is used</p>"
+          },
           {
             "group": "Parameter",
             "type": "string",
@@ -186,8 +193,106 @@
             "group": "Parameter",
             "type": "string",
             "optional": true,
+            "field": "to",
+            "description": "<p>Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Json",
+        "content": "/reports/visits-by-day.json?from=2020-01-01T00:00&to=2020-01-30T23:59",
+        "type": "String"
+      },
+      {
+        "title": "Html",
+        "content": "/reports/visits-by-day.html?from=2020-01-01T00:00&to=2020-01-30T23:59",
+        "type": "String"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response {json}",
+          "content": "HTTP/1.1 200 OK\n{\n\t\"data\": [\n\t\t{\n\t\t\t\"key\": \"27-04-2020\",\n\t\t\t\"value\": 6\n\t\t},\n\t\t{\n\t\t\t\"key\": \"28-04-2020\",\n\t\t\t\"value\": 3\n\t\t}\n\t]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "/home/apidoc/source/reports/handlers.go",
+    "groupTitle": "Reports",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT token value</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Authorization Header",
+          "content": "Authorization: \"Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9\"",
+          "type": "String"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Unauthorized(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/reports/:code/visits-by-hour.:format?from=:from&to=:to",
+    "title": "Reports visits by hour",
+    "name": "Visits_by_hour",
+    "group": "Reports",
+    "description": "<p>Get visits by hour</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
             "field": "from",
-            "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -10 hours from now is used</p>"
+            "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -24 hours from now is used</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Erply ID has to be provided</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "allowedValues": [
+              "\"json\"",
+              "\"html\""
+            ],
+            "optional": false,
+            "field": "format",
+            "defaultValue": "json",
+            "description": "<p>Defines the output format</p>"
           },
           {
             "group": "Parameter",
@@ -216,6 +321,216 @@
         {
           "title": "Success-Response {json}",
           "content": "HTTP/1.1 200 OK\n{\n\t\"data\": [\n\t\t{\n\t\t\t\"key\": \"27-04-2020 09:00\",\n\t\t\t\"value\": 6\n\t\t},\n\t\t{\n\t\t\t\"key\": \"28-04-2020 06:00\",\n\t\t\t\"value\": 3\n\t\t}\n\t]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "/home/apidoc/source/reports/handlers.go",
+    "groupTitle": "Reports",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT token value</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Authorization Header",
+          "content": "Authorization: \"Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9\"",
+          "type": "String"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Unauthorized(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/reports/:code/visits-by-location.:format?from=:from&to=:to",
+    "title": "Reports visits by location",
+    "name": "Visits_by_location",
+    "group": "Reports",
+    "description": "<p>Get visits by location</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
+            "field": "from",
+            "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -1 day from now is used</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Erply ID has to be provided</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "allowedValues": [
+              "\"json\"",
+              "\"html\""
+            ],
+            "optional": false,
+            "field": "format",
+            "defaultValue": "json",
+            "description": "<p>Defines the output format</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
+            "field": "to",
+            "description": "<p>Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Json",
+        "content": "/reports/visits-by-location.json?from=2020-01-01T00:00&to=2020-01-01T23:00",
+        "type": "String"
+      },
+      {
+        "title": "Html",
+        "content": "/reports/visits-by-location.html?from=2020-01-01T00:00&to=2020-01-01T23:00",
+        "type": "String"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response {json}",
+          "content": "HTTP/1.1 200 OK\n{\n\t\"data\": [\n\t\t{\n\t\t\t\"key\": \"Rome\",\n\t\t\t\"value\": 6\n\t\t},\n\t\t{\n\t\t\t\"key\": \"Berlin\",\n\t\t\t\"value\": 3\n\t\t}\n\t]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "/home/apidoc/source/reports/handlers.go",
+    "groupTitle": "Reports",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT token value</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Authorization Header",
+          "content": "Authorization: \"Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9\"",
+          "type": "String"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Unauthorized(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/reports/:code/visits-by-month.:format?from=:from&to=:to",
+    "title": "Reports visits by month",
+    "name": "Visits_by_month",
+    "group": "Reports",
+    "description": "<p>Get visits by month</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
+            "field": "from",
+            "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -1 month from now is used</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Erply ID has to be provided</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "allowedValues": [
+              "\"json\"",
+              "\"html\""
+            ],
+            "optional": false,
+            "field": "format",
+            "defaultValue": "json",
+            "description": "<p>Defines the output format</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": true,
+            "field": "to",
+            "description": "<p>Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Json",
+        "content": "/reports/visits-by-month.json?from=2020-01-01T00:00&to=2020-01-30T23:59",
+        "type": "String"
+      },
+      {
+        "title": "Html",
+        "content": "/reports/visits-by-month.html?from=2020-01-01T00:00&to=2020-01-30T23:59",
+        "type": "String"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response {json}",
+          "content": "HTTP/1.1 200 OK\n{\n\t\"data\": [\n\t\t{\n\t\t\t\"key\": \"04-2020\",\n\t\t\t\"value\": 6\n\t\t},\n\t\t{\n\t\t\t\"key\": \"04-2020\",\n\t\t\t\"value\": 3\n\t\t}\n\t]\n}",
           "type": "json"
         }
       ]

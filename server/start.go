@@ -48,6 +48,9 @@ func Start() error {
 	//graphsRoute.Use(authMiddleware.MiddlewareFunc())
 	{
 		graphsRoute.GET("visits-by-hour.:format", visitStatsHandler.VisitsByHourHandler)
+		graphsRoute.GET("visits-by-location.:format", visitStatsHandler.VisitsByLocationHandler)
+		graphsRoute.GET("visits-by-day.:format", visitStatsHandler.VisitsByDayHandler)
+		graphsRoute.GET("visits-by-month.:format", visitStatsHandler.VisitsByMonthHandler)
 	}
 
 	docsPath := env.ReadEnv("DOCS_PATH", "")

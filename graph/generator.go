@@ -52,14 +52,14 @@ func generateLine(w io.Writer, i Input) error {
 			yPoints = append(yPoints, kv.Value)
 			xPoints = append(xPoints, kv.Key)
 		}
-		line.AddYAxis(ss.Name, yPoints, charts.LabelTextOpts{Show: true, Position: "top"})
+		line.AddYAxis(ss.Name, yPoints, charts.LabelTextOpts{Show: true, Position: "top"}, charts.LineOpts{Step: false})
 	}
 	line.AddXAxis(xPoints)
 	line.SetSeriesOptions(charts.LabelTextOpts{Show: true})
 	line.SetGlobalOptions(
 		charts.TitleOpts{Title: i.GraphName},
 		charts.YAxisOpts{Name: i.YName},
-		charts.XAxisOpts{Name: i.XName},
+		charts.XAxisOpts{Name: i.XName, Scale: true},
 	)
 
 	err := line.Render(w)
