@@ -12,8 +12,8 @@ type Series struct {
 }
 
 type KeyValue struct {
-	Key   string `sql:"key"`
-	Value interface{} `sql:"val"`
+	Key   string `db:"key" json:"key"`
+	Value interface{} `db:"val" json:"value"`
 }
 
 type Type int
@@ -33,7 +33,6 @@ type Input struct {
 }
 
 //https://go-echarts.github.io/go-echarts/docs/bar
-//Generate writes svg graph data to the provided writer
 func Generate(w io.Writer, i Input) error {
 	if i.Type == Line {
 		return generateLine(w, i)

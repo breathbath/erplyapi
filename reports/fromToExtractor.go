@@ -1,4 +1,4 @@
-package graph
+package reports
 
 import (
 	"github.com/gin-gonic/gin"
@@ -15,9 +15,9 @@ type FromTo struct {
 	To   NullTime
 }
 
-func ExtractFromTo(c *gin.Context) (FromTo, error) {
-	fromStr := c.Param("from")
-	toStr := c.Param("to")
+func extractFromTo(c *gin.Context) (FromTo, error) {
+	fromStr := c.Query("from")
+	toStr := c.Query("to")
 	ft := FromTo{
 		From: NullTime{
 			IsNull: true,
@@ -31,7 +31,7 @@ func ExtractFromTo(c *gin.Context) (FromTo, error) {
 		if err != nil {
 			return ft, err
 		}
-		ft.From.IsNull = true
+		ft.From.IsNull = false
 		ft.From.Time = fromT
 	}
 
@@ -40,7 +40,7 @@ func ExtractFromTo(c *gin.Context) (FromTo, error) {
 		if err != nil {
 			return ft, err
 		}
-		ft.To.IsNull = true
+		ft.To.IsNull = false
 		ft.To.Time = toT
 	}
 
@@ -48,12 +48,9 @@ func ExtractFromTo(c *gin.Context) (FromTo, error) {
 }
 
 func ExtractDate(rawDate string) (t time.Time, err error) {
-	formats := []string{"2006-01-02T15:04:05", "2006-01-02T15:04", "2006-01-02 15:04:05", "2006-01-02", "2006-01-02 15:04"}
-	for _, format := range formats {
-		t, err = time.Parse(rawDate, format)
-		if err == nil {
-			return t, nil
-		}
+	t, err = time.Parse("2006-01-02T15:04:05", rawDate)
+	if err == nil {
+		return t, nil
 	}
 
 	return

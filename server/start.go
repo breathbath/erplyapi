@@ -3,8 +3,8 @@ package server
 import (
 	"github.com/breathbath/erplyapi/auth"
 	"github.com/breathbath/erplyapi/db"
-	"github.com/breathbath/erplyapi/graph"
 	"github.com/breathbath/erplyapi/metrics"
+	"github.com/breathbath/erplyapi/reports"
 	"github.com/breathbath/go_utils/utils/env"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -43,11 +43,11 @@ func Start() error {
 		visitsRoute.POST("", visitsEndpoint.CreateVisitsHandler)
 	}
 
-	visitStatsHandler := graph.VisitStatsHandler{VisitsByHourProvider:visitsDb}
-	graphsRoute := router.Group("/graphs")
+	visitStatsHandler := reports.ReportsHandler{ReportsProvider: visitsDb}
+	graphsRoute := router.Group("/reports/:code")
 	//graphsRoute.Use(authMiddleware.MiddlewareFunc())
 	{
-		graphsRoute.GET("visits-by-hour/:from/*to", visitStatsHandler.VisitsByHourHandler)
+		graphsRoute.GET("visits-by-hour.:format", visitStatsHandler.VisitsByHourHandler)
 	}
 
 	docsPath := env.ReadEnv("DOCS_PATH", "")

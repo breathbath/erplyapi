@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/breathbath/erplyapi/graph"
 	"github.com/breathbath/erplyapi/metrics"
+	"github.com/breathbath/erplyapi/reports"
 	baseDb "github.com/breathbath/go_utils/utils/sqlDb"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -34,7 +35,7 @@ VALUES (?,?,?,?)`,
 	return err
 }
 
-func (v Visits) VisitsByHour(fromTo graph.FromTo, erplyID string) (kv []graph.KeyValue, err error) {
+func (v Visits) VisitsByHour(fromTo reports.FromTo, erplyID string) (kv []graph.KeyValue, err error) {
 	from := fromTo.From.Time
 	if fromTo.From.IsNull {
 		from = time.Now().UTC().Add(-10 * time.Hour)
@@ -44,18 +45,19 @@ func (v Visits) VisitsByHour(fromTo graph.FromTo, erplyID string) (kv []graph.Ke
 		to = time.Now().UTC()
 	}
 
-	err = v.Db.FindByQueryFlex(
+	err = ScanByQuery(
+		v.Db,
 		&kv,
 		`
-select count(*) key, DATE_FORMAT(created_at, '%d-%m-%Y %H:00') val
+select count(*) 'val', DATE_FORMAT(created_at, '%d-%m-%Y %H:00') 'key'
 from visit_metrics
 where erply_id = ?
   And created_at BETWEEN ? and ?
 group by hour(created_at), day(created_at);
 `,
 		erplyID,
-		from,
-		to,
+		from.Format(time.RFC3339),
+		to.Format(time.RFC3339),
 	)
 
 	return
