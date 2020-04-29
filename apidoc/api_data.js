@@ -199,7 +199,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Authorization",
-            "description": "<p>JWT token value</p>"
+            "description": "<p>JWT token value (use /docs/#api-Auth-Login_backend to get JWT)</p>"
           }
         ]
       },
@@ -266,7 +266,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Authorization",
-            "description": "<p>JWT token value</p>"
+            "description": "<p>JWT token value (use /docs/#api-Auth-Login_front to get JWT)</p>"
           }
         ]
       },
@@ -367,7 +367,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Authorization",
-            "description": "<p>JWT token value</p>"
+            "description": "<p>JWT token value (use /docs/#api-Auth-Login_backend to get JWT)</p>"
           }
         ]
       },
@@ -472,7 +472,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Authorization",
-            "description": "<p>JWT token value</p>"
+            "description": "<p>JWT token value (use /docs/#api-Auth-Login_backend to get JWT)</p>"
           }
         ]
       },
@@ -577,7 +577,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Authorization",
-            "description": "<p>JWT token value</p>"
+            "description": "<p>JWT token value (use /docs/#api-Auth-Login_backend to get JWT)</p>"
           }
         ]
       },
@@ -682,7 +682,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Authorization",
-            "description": "<p>JWT token value</p>"
+            "description": "<p>JWT token value (use /docs/#api-Auth-Login_backend to get JWT)</p>"
           }
         ]
       },
@@ -767,7 +767,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "Authorization",
-            "description": "<p>JWT token value</p>"
+            "description": "<p>JWT token value (use /docs/#api-Auth-Login_front to get JWT)</p>"
           }
         ]
       },

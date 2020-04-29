@@ -24,6 +24,19 @@ type ErplyRemoteAuth struct {
 }
 
 /**
+@apiDefine AuthBackHeader
+@apiHeader {String} Authorization JWT token value (use /docs/#api-Auth-Login_backend to get JWT)
+@apiHeaderExample {String} Authorization Header
+   Authorization: "Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9"
+@apiErrorExample Unauthorized(401)
+HTTP/1.1 401 Unauthorized
+{
+    "code": 401,
+    "message": "cookie token is empty"
+}
+*/
+
+/**
 @api {post} /back-login Login backend
 @apiDescription Login for user against backend API
 @apiName Login backend
@@ -65,7 +78,7 @@ HTTP/1.1 401 Unauthorized
 @apiGroup Auth
 
 @apiUse JsonHeader
-@apiUse AuthHeader
+@apiUse AuthBackHeader
 
 @apiSuccessExample Success-Response
 HTTP/1.1 200 OK

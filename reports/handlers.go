@@ -37,7 +37,7 @@ type ReportsHandler struct {
 @apiUse ReportInput
 @apiParam {string} [from] Defines from date e.g. 2020-04-26T00:00:00, if empty now date -24 hours from now is used
 
-@apiUse AuthHeader
+@apiUse AuthBackHeader
 
 @apiExample {String} Json
 		/reports/visits-by-hour.json?from=2020-01-01T00:00&to=2020-01-01T23:00
@@ -108,7 +108,7 @@ func (vsh ReportsHandler) VisitsByHourHandler(c *gin.Context) {
 @apiUse ReportInput
 @apiParam {string} [from] Defines from date e.g. 2020-04-26T00:00:00, if empty now date -7 days from now is used
 
-@apiUse AuthHeader
+@apiUse AuthBackHeader
 
 @apiExample {String} Json
 		/reports/visits-by-day.json?from=2020-01-01T00:00&to=2020-01-30T23:59
@@ -179,7 +179,7 @@ func (vsh ReportsHandler) VisitsByDayHandler(c *gin.Context) {
 @apiUse ReportInput
 @apiParam {string} [from] Defines from date e.g. 2020-04-26T00:00:00, if empty now date -1 month from now is used
 
-@apiUse AuthHeader
+@apiUse AuthBackHeader
 
 @apiExample {String} Json
 		/reports/visits-by-month.json?from=2020-01-01T00:00&to=2020-01-30T23:59
@@ -250,7 +250,7 @@ func (vsh ReportsHandler) VisitsByMonthHandler(c *gin.Context) {
 @apiUse ReportInput
 @apiParam {string} [from] Defines from date e.g. 2020-04-26T00:00:00, if empty now date -1 day from now is used
 
-@apiUse AuthHeader
+@apiUse AuthBackHeader
 
 @apiExample {String} Json
 		/reports/visits-by-location.json?from=2020-01-01T00:00&to=2020-01-01T23:00

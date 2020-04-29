@@ -28,8 +28,8 @@ type User struct {
 */
 
 /**
-@apiDefine AuthHeader
-@apiHeader {String} Authorization JWT token value
+@apiDefine AuthFrontHeader
+@apiHeader {String} Authorization JWT token value (use /docs/#api-Auth-Login_front to get JWT)
 @apiHeaderExample {String} Authorization Header
    Authorization: "Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9"
 @apiErrorExample Unauthorized(401)
@@ -75,7 +75,7 @@ HTTP/1.1 401 Unauthorized
 @apiGroup Auth
 
 @apiUse JsonHeader
-@apiUse AuthHeader
+@apiUse AuthFrontHeader
 
 @apiSuccessExample Success-Response
 HTTP/1.1 200 OK

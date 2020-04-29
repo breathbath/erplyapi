@@ -25,7 +25,7 @@ type Endpoint struct {
 @apiName Visit create
 @apiGroup Visit
 @apiUse JsonHeader
-@apiUse AuthHeader
+@apiUse AuthFrontHeader
 
 @apiParamExample {json} Body:
 {
