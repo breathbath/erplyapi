@@ -22,13 +22,19 @@ func Start() error {
 	router.Use(ginlogrus.Logger(logrus.StandardLogger()))
 	router.Use(gin.Recovery())
 
-	authMiddleware, err := auth.BuildFrontMiddleWare()
+	frontAuthMiddleWare, err := auth.BuildFrontMiddleWare()
 	if err != nil {
 		return err
 	}
-	router.POST("/login", authMiddleware.LoginHandler)
+	router.POST("/front-login", frontAuthMiddleWare.LoginHandler)
+	router.POST("/front-refresh", frontAuthMiddleWare.RefreshHandler)
 
-	router.POST("/refresh", authMiddleware.RefreshHandler)
+	backAuthMiddleWare, err := auth.BuildBackMiddleWare()
+	if err != nil {
+		return err
+	}
+	router.POST("/back-login", backAuthMiddleWare.LoginHandler)
+	router.POST("/back-refresh", backAuthMiddleWare.RefreshHandler)
 
 	baseDB, err := db.NewDb()
 	if err != nil {
@@ -38,14 +44,14 @@ func Start() error {
 	visitsEndpoint := metrics.Endpoint{VisitStore: visitsDb}
 
 	visitsRoute := router.Group("/visits")
-	visitsRoute.Use(authMiddleware.MiddlewareFunc())
+	visitsRoute.Use(frontAuthMiddleWare.MiddlewareFunc())
 	{
 		visitsRoute.POST("", visitsEndpoint.CreateVisitsHandler)
 	}
 
 	visitStatsHandler := reports.ReportsHandler{ReportsProvider: visitsDb}
-	graphsRoute := router.Group("/reports/:code")
-	//graphsRoute.Use(authMiddleware.MiddlewareFunc())
+	graphsRoute := router.Group("/reports")
+	graphsRoute.Use(backAuthMiddleWare.MiddlewareFunc())
 	{
 		graphsRoute.GET("visits-by-hour.:format", visitStatsHandler.VisitsByHourHandler)
 		graphsRoute.GET("visits-by-location.:format", visitStatsHandler.VisitsByLocationHandler)

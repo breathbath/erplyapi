@@ -29,10 +29,69 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/login",
-    "title": "Login",
-    "description": "<p>User auth</p>",
-    "name": "Login",
+    "url": "/back-login",
+    "title": "Login backend",
+    "description": "<p>Login for user against backend API</p>",
+    "name": "Login_backend",
+    "group": "Auth",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "{\n\t\"session_id\": \"Dfsajfjflkdjfldsjflsdfja\",\n\t\"erply_id\": \"506722\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "HTTP/1.1 200 OK\n{\n    \"code\": 200,\n    \"expire\": \"2020-04-20T13:30:49+03:00\",\n    \"token\": \"YOUR_TOKEN_RESULT\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Bad request(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"incorrect Username or Password\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "/home/apidoc/source/auth/backMiddleware.go",
+    "groupTitle": "Auth",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Content-Type",
+            "defaultValue": "application/json",
+            "description": "<p>Json content type</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Content-Type",
+          "content": "Content-Type:\"application/json\"",
+          "type": "String"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "/front-login",
+    "title": "Login front",
+    "description": "<p>Login for user against front API</p>",
+    "name": "Login_front",
     "group": "Auth",
     "parameter": {
       "examples": [
@@ -88,10 +147,77 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/refresh",
-    "title": "Refresh token",
-    "description": "<p>Refreshes the auth token</p>",
-    "name": "Refresh_token",
+    "url": "/back-refresh",
+    "title": "Refresh token back",
+    "description": "<p>Refreshes the auth token for the backend API</p>",
+    "name": "Refresh_token_back",
+    "group": "Auth",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response",
+          "content": "HTTP/1.1 200 OK\n{\n    \"code\": 200,\n    \"expire\": \"2020-04-20T13:47:59+03:00\",\n    \"token\": \"YOUR_TOKEN_RESULT\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Bad request(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Unauthorized(401)",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"code\": 401,\n    \"message\": \"cookie token is empty\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "/home/apidoc/source/auth/backMiddleware.go",
+    "groupTitle": "Auth",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Content-Type",
+            "defaultValue": "application/json",
+            "description": "<p>Json content type</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>JWT token value</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Content-Type",
+          "content": "Content-Type:\"application/json\"",
+          "type": "String"
+        },
+        {
+          "title": "Authorization Header",
+          "content": "Authorization: \"Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9\"",
+          "type": "String"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "/front-refresh",
+    "title": "Refresh token front",
+    "description": "<p>Refreshes the auth token for the front API</p>",
+    "name": "Refresh_token_front",
     "group": "Auth",
     "success": {
       "examples": [
@@ -155,7 +281,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/reports/:code/visits-by-day.:format?from=:from&to=:to",
+    "url": "/reports/visits-by-day.:format?from=:from&to=:to",
     "title": "Reports visits by day",
     "name": "Visits_by_day",
     "group": "Reports",
@@ -169,13 +295,6 @@ define({ "api": [
             "optional": true,
             "field": "from",
             "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -7 days from now is used</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": "<p>Erply ID has to be provided</p>"
           },
           {
             "group": "Parameter",
@@ -260,7 +379,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/reports/:code/visits-by-hour.:format?from=:from&to=:to",
+    "url": "/reports/visits-by-hour.:format?from=:from&to=:to",
     "title": "Reports visits by hour",
     "name": "Visits_by_hour",
     "group": "Reports",
@@ -274,13 +393,6 @@ define({ "api": [
             "optional": true,
             "field": "from",
             "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -24 hours from now is used</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": "<p>Erply ID has to be provided</p>"
           },
           {
             "group": "Parameter",
@@ -365,7 +477,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/reports/:code/visits-by-location.:format?from=:from&to=:to",
+    "url": "/reports/visits-by-location.:format?from=:from&to=:to",
     "title": "Reports visits by location",
     "name": "Visits_by_location",
     "group": "Reports",
@@ -379,13 +491,6 @@ define({ "api": [
             "optional": true,
             "field": "from",
             "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -1 day from now is used</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": "<p>Erply ID has to be provided</p>"
           },
           {
             "group": "Parameter",
@@ -470,7 +575,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/reports/:code/visits-by-month.:format?from=:from&to=:to",
+    "url": "/reports/visits-by-month.:format?from=:from&to=:to",
     "title": "Reports visits by month",
     "name": "Visits_by_month",
     "group": "Reports",
@@ -484,13 +589,6 @@ define({ "api": [
             "optional": true,
             "field": "from",
             "description": "<p>Defines from date e.g. 2020-04-26T00:00:00, if empty now date -1 month from now is used</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": "<p>Erply ID has to be provided</p>"
           },
           {
             "group": "Parameter",

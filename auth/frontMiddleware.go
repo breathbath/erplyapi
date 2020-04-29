@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var identityKey = "id"
+var identityKeyFront = "id"
 
 type login struct {
 	Username string `form:"username" json:"username" binding:"required"`
@@ -41,9 +41,9 @@ HTTP/1.1 401 Unauthorized
 */
 
 /**
-@api {post} /login Login
-@apiDescription User auth
-@apiName Login
+@api {post} /front-login Login front
+@apiDescription Login for user against front API
+@apiName Login front
 @apiGroup Auth
 @apiUse JsonHeader
 @apiParamExample {json} Body:
@@ -69,9 +69,9 @@ HTTP/1.1 401 Unauthorized
 */
 
 /**
-@api {post} /refresh Refresh token
-@apiDescription Refreshes the auth token
-@apiName Refresh token
+@api {post} /front-refresh Refresh token front
+@apiDescription Refreshes the auth token for the front API
+@apiName Refresh token front
 @apiGroup Auth
 
 @apiUse JsonHeader
@@ -100,11 +100,11 @@ func BuildFrontMiddleWare() (*jwt.GinJWTMiddleware, error) {
 		Key:         []byte(env.ReadEnv("AUTH_SECRET", "123456")),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
-		IdentityKey: identityKey,
+		IdentityKey: identityKeyFront,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*User); ok {
 				return jwt.MapClaims{
-					identityKey: v.UserName,
+					identityKeyFront: v.UserName,
 				}
 			}
 			return jwt.MapClaims{}
@@ -112,7 +112,7 @@ func BuildFrontMiddleWare() (*jwt.GinJWTMiddleware, error) {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &User{
-				UserName: claims[identityKey].(string),
+				UserName: claims[identityKeyFront].(string),
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {

@@ -83,6 +83,7 @@ order by created_at
 }
 
 func (v Visits) queryReport(sql string, fromTo reports.FromTo, erplyID string, defaultFrom time.Time) (kv []graph.KeyValue, err error) {
+	kv = []graph.KeyValue{}
 	from := fromTo.From.Time
 	if fromTo.From.IsNull {
 		from = defaultFrom

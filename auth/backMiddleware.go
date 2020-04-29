@@ -1,48 +1,45 @@
 package auth
 
 import (
-	"crypto/subtle"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/breathbath/go_utils/utils/env"
+	"github.com/erply/api-go-wrapper/pkg/api"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"net/http"
 	"time"
 )
 
+var IdentityKeyBack = "erply_id"
+
 type Session struct {
 	SessionID string `json:"session_id" binding:"required"`
-	ErplyID string `json:"erply_id" binding:"required"`
+	ErplyID   string `json:"erply_id" binding:"required"`
+}
+
+type ErplyRemoteAuth struct {
+	UserName string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	ErplyID  string `json:"clientCode" binding:"required"`
 }
 
 /**
-@apiDefine JsonHeader
-@apiHeader {String} Content-Type="application/json" Json content type
-@apiHeaderExample {String} Content-Type
-   Content-Type:"application/json"
-*/
-
-/**
-@apiDefine AuthHeader
-@apiHeader {String} Authorization JWT token value
-@apiHeaderExample {String} Authorization Header
-   Authorization: "Bearer eyJhbGciOi.JSUzUxMiIsIn.R5cCI6IkpXVCJ9"
-@apiErrorExample Unauthorized(401)
-HTTP/1.1 401 Unauthorized
-{
-    "code": 401,
-    "message": "cookie token is empty"
-}
-*/
-
-/**
-@api {post} /login Login
-@apiDescription User auth
-@apiName Login
+@api {post} /back-login Login backend
+@apiDescription Login for user against backend API
+@apiName Login backend
 @apiGroup Auth
 @apiUse JsonHeader
 @apiParamExample {json} Body:
 {
-	"username": "admin",
-	"password": "admin"
+	"session_id": "Dfsajfjflkdjfldsjflsdfja",
+	"erply_id": "506722"
+}
+
+@apiParamExample {json} Body2:
+{
+	"username": "no@mail.me",
+	"password": "Dfsajfjflkdjfldsjflsdfja",
+	"clientCode": "506722"
 }
 
 @apiSuccessExample Success-Response
@@ -62,9 +59,9 @@ HTTP/1.1 401 Unauthorized
 */
 
 /**
-@api {post} /refresh Refresh token
-@apiDescription Refreshes the auth token
-@apiName Refresh token
+@api {post} /back-refresh Refresh token back
+@apiDescription Refreshes the auth token for the backend API
+@apiName Refresh token back
 @apiGroup Auth
 
 @apiUse JsonHeader
@@ -90,46 +87,61 @@ func BuildBackMiddleWare() (*jwt.GinJWTMiddleware, error) {
 	// the jwt middleware
 	return jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       env.ReadEnv("AUTH_REALM", "testing"),
-		Key:         []byte(env.ReadEnv("AUTH_SECRET", "123456")),
+		Key:         []byte(env.ReadEnv("AUTH_SECRET_BACK", "12345698")),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
-		IdentityKey: "session",
+		IdentityKey: IdentityKeyBack,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*Session); ok {
+			if v, ok := data.(Session); ok {
 				return jwt.MapClaims{
-					"session": v.SessionID,
+					IdentityKeyBack: v.ErplyID,
 				}
 			}
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
-			return &Session{
-				SessionID: claims["session"].(string),
+			return Session{
+				ErplyID: claims[IdentityKeyBack].(string),
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
+			var authData ErplyRemoteAuth
+
+			cl := &http.Client{Timeout: 10 * time.Second}
+
+			if err := c.ShouldBind(&authData); err == nil {
+				erplySess, err := api.VerifyUser(authData.UserName, authData.Password, authData.ErplyID, cl)
+				if err != nil {
+					log.Errorf("Failed verify session with the remote API: %v", err)
+					return nil, jwt.ErrFailedAuthentication
+				}
+
+				return Session{SessionID: erplySess, ErplyID: authData.ErplyID}, nil
+			}
+
 			var sess Session
 			if err := c.ShouldBind(&sess); err != nil {
+				log.Errorf("Invalid session data in input: %v", err)
 				return "", jwt.ErrMissingLoginValues
 			}
 
-			expectedUser := env.ReadEnv("AUTH_USER", "root")
-			if subtle.ConstantTimeCompare([]byte(userID), []byte(expectedUser)) == 0 {
+			sessUser, err := api.GetSessionKeyUser(sess.SessionID, sess.ErplyID, cl)
+			if err != nil {
+				log.Errorf("Failed verify session with the remote API: %v", err)
 				return nil, jwt.ErrFailedAuthentication
 			}
 
-			exprectedPass := env.ReadEnv("AUTH_PASS", "root")
-			if subtle.ConstantTimeCompare([]byte(password), []byte(exprectedPass)) == 0 {
+			if sessUser.SessionKey != sess.SessionID {
+				log.Errorf("Unexpected session key, expected key is %v", sessUser.SessionKey)
 				return nil, jwt.ErrFailedAuthentication
 			}
-			return &User{
-				UserName:  userID,
-			}, nil
+
+			return sess, nil
 
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if _, ok := data.(*User); ok {
+			if _, ok := data.(Session); ok {
 				return true
 			}
 

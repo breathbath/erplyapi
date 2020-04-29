@@ -2,6 +2,8 @@ package reports
 
 import (
 	"bytes"
+	"errors"
+	"github.com/breathbath/erplyapi/auth"
 	"github.com/breathbath/erplyapi/graph"
 	"github.com/gin-gonic/gin"
 	"html/template"
@@ -21,13 +23,13 @@ type ReportsHandler struct {
 
 /**
 @apiDefine ReportInput
-@apiParam {string} code Erply ID has to be provided
 @apiParam {string="json","html"} format=json Defines the output format
 @apiParam {string} [to] Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used
+@apiParam {string} token JWT token to auth access to the reports
 */
 
 /**
-@api {get} /reports/:code/visits-by-hour.:format?from=:from&to=:to Reports visits by hour
+@api {get} /reports/visits-by-hour.:format?from=:from&to=:to Reports visits by hour
 @apiName Visits by hour
 @apiGroup Reports
 @apiDescription Get visits by hour
@@ -40,7 +42,7 @@ type ReportsHandler struct {
 @apiExample {String} Json
 		/reports/visits-by-hour.json?from=2020-01-01T00:00&to=2020-01-01T23:00
 @apiExample {String} Html
-		/reports/visits-by-hour.html?from=2020-01-01T00:00&to=2020-01-01T23:00
+		/reports/visits-by-hour.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-01T23:00
 @apiSuccessExample Success-Response {json}
 HTTP/1.1 200 OK
 {
@@ -66,7 +68,13 @@ func (vsh ReportsHandler) VisitsByHourHandler(c *gin.Context) {
 		return
 	}
 
-	data, err := vsh.ReportsProvider.VisitsByHour(ft, c.Param("code"))
+	code, err := vsh.extractErplyIDFromSession(c, format)
+	if err != nil {
+		sendError(c, err, format, http.StatusBadRequest)
+		return
+	}
+
+	data, err := vsh.ReportsProvider.VisitsByHour(ft, code)
 	if err != nil {
 		sendError(c, err, format, http.StatusInternalServerError)
 		return
@@ -92,7 +100,7 @@ func (vsh ReportsHandler) VisitsByHourHandler(c *gin.Context) {
 }
 
 /**
-@api {get} /reports/:code/visits-by-day.:format?from=:from&to=:to Reports visits by day
+@api {get} /reports/visits-by-day.:format?from=:from&to=:to Reports visits by day
 @apiName Visits by day
 @apiGroup Reports
 @apiDescription Get visits by day
@@ -105,7 +113,7 @@ func (vsh ReportsHandler) VisitsByHourHandler(c *gin.Context) {
 @apiExample {String} Json
 		/reports/visits-by-day.json?from=2020-01-01T00:00&to=2020-01-30T23:59
 @apiExample {String} Html
-		/reports/visits-by-day.html?from=2020-01-01T00:00&to=2020-01-30T23:59
+		/reports/visits-by-day.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-30T23:59
 @apiSuccessExample Success-Response {json}
 HTTP/1.1 200 OK
 {
@@ -131,7 +139,13 @@ func (vsh ReportsHandler) VisitsByDayHandler(c *gin.Context) {
 		return
 	}
 
-	data, err := vsh.ReportsProvider.VisitsByDay(ft, c.Param("code"))
+	code, err := vsh.extractErplyIDFromSession(c, format)
+	if err != nil {
+		sendError(c, err, format, http.StatusBadRequest)
+		return
+	}
+
+	data, err := vsh.ReportsProvider.VisitsByDay(ft, code)
 	if err != nil {
 		sendError(c, err, format, http.StatusInternalServerError)
 		return
@@ -157,7 +171,7 @@ func (vsh ReportsHandler) VisitsByDayHandler(c *gin.Context) {
 }
 
 /**
-@api {get} /reports/:code/visits-by-month.:format?from=:from&to=:to Reports visits by month
+@api {get} /reports/visits-by-month.:format?from=:from&to=:to Reports visits by month
 @apiName Visits by month
 @apiGroup Reports
 @apiDescription Get visits by month
@@ -170,7 +184,7 @@ func (vsh ReportsHandler) VisitsByDayHandler(c *gin.Context) {
 @apiExample {String} Json
 		/reports/visits-by-month.json?from=2020-01-01T00:00&to=2020-01-30T23:59
 @apiExample {String} Html
-		/reports/visits-by-month.html?from=2020-01-01T00:00&to=2020-01-30T23:59
+		/reports/visits-by-month.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-30T23:59
 @apiSuccessExample Success-Response {json}
 HTTP/1.1 200 OK
 {
@@ -196,7 +210,13 @@ func (vsh ReportsHandler) VisitsByMonthHandler(c *gin.Context) {
 		return
 	}
 
-	data, err := vsh.ReportsProvider.VisitsByMonth(ft, c.Param("code"))
+	code, err := vsh.extractErplyIDFromSession(c, format)
+	if err != nil {
+		sendError(c, err, format, http.StatusBadRequest)
+		return
+	}
+
+	data, err := vsh.ReportsProvider.VisitsByMonth(ft, code)
 	if err != nil {
 		sendError(c, err, format, http.StatusInternalServerError)
 		return
@@ -222,7 +242,7 @@ func (vsh ReportsHandler) VisitsByMonthHandler(c *gin.Context) {
 }
 
 /**
-@api {get} /reports/:code/visits-by-location.:format?from=:from&to=:to Reports visits by location
+@api {get} /reports/visits-by-location.:format?from=:from&to=:to Reports visits by location
 @apiName Visits by location
 @apiGroup Reports
 @apiDescription Get visits by location
@@ -235,7 +255,7 @@ func (vsh ReportsHandler) VisitsByMonthHandler(c *gin.Context) {
 @apiExample {String} Json
 		/reports/visits-by-location.json?from=2020-01-01T00:00&to=2020-01-01T23:00
 @apiExample {String} Html
-		/reports/visits-by-location.html?from=2020-01-01T00:00&to=2020-01-01T23:00
+		/reports/visits-by-location.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-01T23:00
 @apiSuccessExample Success-Response {json}
 HTTP/1.1 200 OK
 {
@@ -261,7 +281,13 @@ func (vsh ReportsHandler) VisitsByLocationHandler(c *gin.Context) {
 		return
 	}
 
-	data, err := vsh.ReportsProvider.VisitsByLocation(ft, c.Param("code"))
+	code, err := vsh.extractErplyIDFromSession(c, format)
+	if err != nil {
+		sendError(c, err, format, http.StatusBadRequest)
+		return
+	}
+
+	data, err := vsh.ReportsProvider.VisitsByLocation(ft, code)
 	if err != nil {
 		sendError(c, err, format, http.StatusInternalServerError)
 		return
@@ -284,6 +310,16 @@ func (vsh ReportsHandler) VisitsByLocationHandler(c *gin.Context) {
 		XName:     "Location",
 		YName:     "Count",
 	})
+}
+
+func (vsh ReportsHandler) extractErplyIDFromSession(c *gin.Context, format Format) (string, error) {
+	sessI, found := c.Get(auth.IdentityKeyBack)
+	if !found {
+		return "", errors.New("invalid session context")
+	}
+
+	sess := sessI.(auth.Session)
+	return sess.ErplyID, nil
 }
 
 func (vsh ReportsHandler) generateGraph(c *gin.Context, i graph.Input) {

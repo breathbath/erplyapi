@@ -7,7 +7,7 @@ require (
 	github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d // indirect
 	github.com/appleboy/gin-jwt/v2 v2.6.3
 	github.com/breathbath/go_utils v1.3.7
-	github.com/erply/api-go-wrapper v0.0.1
+	github.com/erply/api-go-wrapper v0.2.2-0.20200429124144-4d2ec4cb8d79
 	github.com/gin-gonic/gin v1.6.2
 	github.com/go-echarts/go-echarts v0.0.0-20190915064101-cbb3b43ade5d
 	github.com/go-redis/redis/v7 v7.2.0
