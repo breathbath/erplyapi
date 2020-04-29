@@ -3,6 +3,7 @@ package graph
 import (
 	"fmt"
 	"github.com/go-echarts/go-echarts/charts"
+	log "github.com/sirupsen/logrus"
 	"io"
 )
 
@@ -64,6 +65,7 @@ func generateLine(w io.Writer, i Input) error {
 
 	err := line.Render(w)
 	if err != nil {
+		log.Error("Graph render error: %v", err)
 		return err
 	}
 

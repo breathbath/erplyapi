@@ -54,3 +54,5 @@ genmig:
 	#cat migrations/template.txt | sed -e 's/MigName/Migration${now}/g' > migrations/items/Migration${now}.go
 	docker run --rm -it -v ${CURDIR}/migrations:/home/migrations busybox sh -c 'sed "s/MigName/Migration${now}/g" /home/migrations/template.txt  > /home/migrations/items/Migration${now}.go'
 	docker run --rm -it -v ${CURDIR}/migrations:/home/migrations busybox sed -i "s/^}/	registry.RegisterMigration(items.Migration${now}{})\\n}/g" /home/migrations/registryInitialiser.go
+migrate:
+	docker-compose -f docker-compose.yml run --entrypoint '' erply_api /app/erply_server migrate

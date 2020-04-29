@@ -26,6 +26,10 @@ Now you can start all services with the docker-compose:
 
     make up
     
+Execute migrations
+
+    make migrate
+    
 To stop all services:
 
     make down

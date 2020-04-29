@@ -36,6 +36,9 @@ type Endpoint struct {
 
 @apiSuccessExample Success-Response
 HTTP/1.1 200 OK
+{
+	"message":"Success"
+}
 
 @apiErrorExample Bad request(400)
 HTTP/1.1 400 Bad request
@@ -58,5 +61,6 @@ func (e Endpoint) CreateVisitsHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	c.JSON(http.StatusCreated, gin.H{"message": "Success"})
 }
 

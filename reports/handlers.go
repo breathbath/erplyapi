@@ -330,6 +330,10 @@ func (vsh ReportsHandler) generateGraph(c *gin.Context, i graph.Input) {
 		return
 	}
 
+	vsh.sendHtml(c, buf, i)
+}
+
+func (vsh ReportsHandler) sendHtml(c *gin.Context, buf *bytes.Buffer, i graph.Input) {
 	c.HTML(http.StatusOK, "report.gohtml", gin.H{
 		"title":  i.GraphName,
 		"graph": template.HTML(buf.String()),
