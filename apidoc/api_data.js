@@ -40,6 +40,11 @@ define({ "api": [
           "title": "Body:",
           "content": "{\n\t\"session_id\": \"Dfsajfjflkdjfldsjflsdfja\",\n\t\"erply_id\": \"506722\"\n}",
           "type": "json"
+        },
+        {
+          "title": "Body2:",
+          "content": "{\n\t\"username\": \"no@mail.me\",\n\t\"password\": \"Dfsajfjflkdjfldsjflsdfja\",\n\t\"clientCode\": \"506722\"\n}",
+          "type": "json"
         }
       ]
     },
@@ -314,6 +319,13 @@ define({ "api": [
             "optional": true,
             "field": "to",
             "description": "<p>Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "token",
+            "description": "<p>JWT token to auth access to the reports</p>"
           }
         ]
       }
@@ -326,7 +338,7 @@ define({ "api": [
       },
       {
         "title": "Html",
-        "content": "/reports/visits-by-day.html?from=2020-01-01T00:00&to=2020-01-30T23:59",
+        "content": "/reports/visits-by-day.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-30T23:59",
         "type": "String"
       }
     ],
@@ -412,6 +424,13 @@ define({ "api": [
             "optional": true,
             "field": "to",
             "description": "<p>Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "token",
+            "description": "<p>JWT token to auth access to the reports</p>"
           }
         ]
       }
@@ -424,7 +443,7 @@ define({ "api": [
       },
       {
         "title": "Html",
-        "content": "/reports/visits-by-hour.html?from=2020-01-01T00:00&to=2020-01-01T23:00",
+        "content": "/reports/visits-by-hour.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-01T23:00",
         "type": "String"
       }
     ],
@@ -510,6 +529,13 @@ define({ "api": [
             "optional": true,
             "field": "to",
             "description": "<p>Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "token",
+            "description": "<p>JWT token to auth access to the reports</p>"
           }
         ]
       }
@@ -522,7 +548,7 @@ define({ "api": [
       },
       {
         "title": "Html",
-        "content": "/reports/visits-by-location.html?from=2020-01-01T00:00&to=2020-01-01T23:00",
+        "content": "/reports/visits-by-location.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-01T23:00",
         "type": "String"
       }
     ],
@@ -608,6 +634,13 @@ define({ "api": [
             "optional": true,
             "field": "to",
             "description": "<p>Defines to date e.g. 2020-04-27T00:00:00, if empty now date is used</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "token",
+            "description": "<p>JWT token to auth access to the reports</p>"
           }
         ]
       }
@@ -620,7 +653,7 @@ define({ "api": [
       },
       {
         "title": "Html",
-        "content": "/reports/visits-by-month.html?from=2020-01-01T00:00&to=2020-01-30T23:59",
+        "content": "/reports/visits-by-month.html?token=c5gJGJefdePhtuzVTC9oySEQpYW2D3p77tloMBR&from=2020-01-01T00:00&to=2020-01-30T23:59",
         "type": "String"
       }
     ],
