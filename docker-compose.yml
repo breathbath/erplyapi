@@ -13,9 +13,23 @@ services:
     image: 'erply_api:latest'
     depends_on:
       - redis
+      - erply_db
     entrypoint: /app/erply_server
     ports:
       - 127.0.0.1:8082:8082
     restart: on-failure
     volumes:
       - ./apidoc:/app/apidoc
+  erply_db:
+    image: breathbath/mysql8
+    command: "--default-authentication-plugin=mysql_native_password"
+    container_name: mysql8
+    volumes:
+      - ./docker/Data/erply_db:/var/lib/mysql
+      - ./mysqlConfServer.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mysqlConfClient.cnf:/root/.my.cnf
+    env_file:
+      - ./mysqlConfEnv.env
+    ports:
+      - 127.0.0.1:3310:3306
+    restart: always
